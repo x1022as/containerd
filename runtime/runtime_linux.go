@@ -14,7 +14,9 @@ type Checkpoint struct {
 	// Shell persists tty sessions in the checkpoint
 	Shell bool `json:"shell"`
 	// Exit exits the container after the checkpoint is finished
-	Exit bool `json:"exit"`
+	Exit            bool   `json:"exit"`
+	ImagesDirectory string `json:"imagesDirectory"`
+	WorkDirectory   string `json:"workDirectory"`
 }
 
 // PlatformProcessState container platform-specific fields in the ProcessState structure

@@ -95,13 +95,27 @@ func (c *container) Checkpoints() ([]Checkpoint, error) {
 }
 
 func (c *container) Checkpoint(cpt Checkpoint) error {
-	if err := os.MkdirAll(filepath.Join(c.bundle, "checkpoints"), 0755); err != nil {
-		return err
+	var (
+		path     string
+		workPath string
+	)
+	if cpt.ImagesDirectory != "" {
+		if err := os.MkdirAll(filepath.Join(c.bundle, "checkpoints"), 0755); err != nil {
+			return err
+		}
+		path = filepath.Join(c.bundle, "checkpoints", cpt.Name)
+		if err := os.Mkdir(path, 0755); err != nil {
+			return err
+		}
+	} else {
+		path = cpt.ImagesDirectory
 	}
-	path := filepath.Join(c.bundle, "checkpoints", cpt.Name)
-	if err := os.Mkdir(path, 0755); err != nil {
-		return err
+	if cpt.WorkDirectory != "" {
+		workPath = cpt.WorkDirectory
+	} else {
+		workPath = path
 	}
+
 	f, err := os.Create(filepath.Join(path, "config.json"))
 	if err != nil {
 		return err
@@ -115,6 +129,7 @@ func (c *container) Checkpoint(cpt Checkpoint) error {
 	args := []string{
 		"checkpoint",
 		"--image-path", path,
+		"--work-path", workPath,
 	}
 	add := func(flags ...string) {
 		args = append(args, flags...)

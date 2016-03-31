@@ -33,11 +33,13 @@ func (s *apiServer) CreateCheckpoint(ctx context.Context, r *types.CreateCheckpo
 	e := &supervisor.CreateCheckpointTask{}
 	e.ID = r.Id
 	e.Checkpoint = &runtime.Checkpoint{
-		Name:        r.Checkpoint.Name,
-		Exit:        r.Checkpoint.Exit,
-		Tcp:         r.Checkpoint.Tcp,
-		UnixSockets: r.Checkpoint.UnixSockets,
-		Shell:       r.Checkpoint.Shell,
+		Name:            r.Checkpoint.Name,
+		Exit:            r.Checkpoint.Exit,
+		Tcp:             r.Checkpoint.Tcp,
+		UnixSockets:     r.Checkpoint.UnixSockets,
+		Shell:           r.Checkpoint.Shell,
+		ImagesDirectory: r.Checkpoint.ImagesDirectory,
+		WorkDirectory:   r.Checkpoint.WorkDirectory,
 	}
 	s.sv.SendTask(e)
 	if err := <-e.ErrorCh(); err != nil {
